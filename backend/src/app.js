@@ -19,6 +19,7 @@ import { logger } from './utils/logger.js';
 const app = express();
 
 // ── Core Middleware ──────────────────────────────────────────────
+// ── Core Middleware ──────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -26,11 +27,35 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       imgSrc: ["'self'", "data:", "https://cdn.jsdelivr.net"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://*.onrender.com", "https://*.vercel.app"],
     },
   },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
-app.use(cors({ origin: config.allowedOrigins, credentials: true }));
+
+// More robust CORS handling
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const allowed = config.allowedOrigins.some(o => {
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      const normalizedAllowed = o.trim().replace(/\/$/, "");
+      return normalizedOrigin === normalizedAllowed;
+    });
+
+    if (allowed || config.nodeEnv === 'development') {
+      callback(null, true);
+    } else {
+      logger.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Request-Id']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
