@@ -88,17 +88,25 @@ function buildHtmlEmail(summaryMarkdown) {
  * Send via SMTP using Nodemailer.
  */
 async function sendViaSMTP(recipient, summary) {
+  const isSecure = config.smtpPort === 465;
+  
   const transporter = nodemailer.createTransport({
     host: config.smtpHost,
     port: config.smtpPort,
-    secure: config.smtpPort === 465,
+    secure: isSecure,
     auth: {
       user: config.smtpUser,
       pass: config.smtpPassword,
     },
-    connectionTimeout: 30000, // 30 seconds
+    // Enhanced settings for Port 587 STARTTLS
+    requireTLS: !isSecure, 
+    connectionTimeout: 30000, 
     greetingTimeout: 30000,
     socketTimeout: 30000,
+    tls: {
+      // Do not fail on invalid certs (helpful for some cloud relays)
+      rejectUnauthorized: false
+    }
   });
 
   // Verify connection configuration
