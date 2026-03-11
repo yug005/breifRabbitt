@@ -6,7 +6,7 @@ import { config } from '../config/env.js';
 
 export const rateLimiter = rateLimit({
   windowMs: config.rateLimitWindowMs,
-  max: config.rateLimitMaxRequests,
+  max: 100, // Increased to allow polling without hits
   standardHeaders: true,
   legacyHeaders: false,
   message: {

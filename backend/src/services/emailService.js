@@ -98,6 +98,15 @@ async function sendViaSMTP(recipient, summary) {
     },
   });
 
+  // Verify connection configuration
+  try {
+    await transporter.verify();
+    logger.info('SMTP connection verified successfully');
+  } catch (err) {
+    logger.error(`SMTP verification failed: ${err.message}`);
+    throw new Error(`Email verification failed: ${err.message}`);
+  }
+
   await transporter.sendMail({
     from: `"${config.smtpFromName}" <${config.smtpUser}>`,
     to: recipient,
