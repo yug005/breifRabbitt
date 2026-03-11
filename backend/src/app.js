@@ -4,6 +4,8 @@
  * Assembles middleware stack, routes, Swagger docs,
  * and the global error handler.
  */
+import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -48,14 +50,27 @@ setupSwagger(app);
 // ── API Routes ──────────────────────────────────────────────────
 app.use('/api/v1', apiRouter);
 
-// ── Root Redirect ───────────────────────────────────────────────
-app.get('/', (_req, res) => {
-  res.redirect('/docs');
-});
-
 // ── Root Health Check (unversioned) ─────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'healthy', version: '1.0.0', service: 'BriefRabbit API' });
+});
+
+// ── Serve Frontend Static Files (Monolith Mode) ─────────────────
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicPath = path.join(__dirname, '../public'); // Or '../frontend/dist'
+app.use(express.static(publicPath));
+
+// ── SPA Routing ─────────────────────────────────────────────────
+// Redirect root to docs by default, but let frontend handle other routes
+app.get('/', (req, res) => res.redirect('/docs'));
+
+// Serve index.html for any non-API/non-docs route (SPA fallback)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/docs')) {
+    return next(); // Let API/docs routes be handled by their respective handlers
+  }
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 // ── Global Error Handler ────────────────────────────────────────

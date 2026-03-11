@@ -1,4 +1,4 @@
-app = "briefrabbit-backend"
+app = "briefrabbit-fullstack"
 primary_region = "maa"
 
 [build]
