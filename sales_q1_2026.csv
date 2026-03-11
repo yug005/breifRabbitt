@@ -1,0 +1,11 @@
+Date,Product,Region,Category,Units Sold,Revenue,Profit Margin,Customer Satisfaction Rating
+2026-01-05,Widget A,North,Electronics,150,4500.00,0.25,4.2
+2026-01-12,Widget B,South,Home Goods,200,3000.00,0.40,4.8
+2026-01-15,Widget A,East,Electronics,85,2550.00,0.25,3.9
+2026-01-20,Widget C,West,Apparel,320,6400.00,0.50,4.5
+2026-02-02,Widget B,North,Home Goods,110,1650.00,0.40,4.1
+2026-02-14,Widget C,South,Apparel,250,5000.00,0.50,4.7
+2026-02-28,Widget A,West,Electronics,190,5700.00,0.25,4.3
+2026-03-05,Widget B,East,Home Goods,175,2625.00,0.40,4.6
+2026-03-10,Widget C,North,Apparel,210,4200.00,0.50,4.4
+2026-03-11,Widget A,South,Electronics,130,3900.00,0.25,4.0
