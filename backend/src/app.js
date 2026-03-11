@@ -18,6 +18,9 @@ import { logger } from './utils/logger.js';
 
 const app = express();
 
+// Required for Render/Vercel to correctly identify user IPs for rate limiting
+app.set('trust proxy', 1);
+
 // ── Core Middleware ──────────────────────────────────────────────
 // ── Core Middleware ──────────────────────────────────────────────
 app.use(helmet({
