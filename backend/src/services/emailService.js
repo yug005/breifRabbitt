@@ -96,6 +96,9 @@ async function sendViaSMTP(recipient, summary) {
       user: config.smtpUser,
       pass: config.smtpPassword,
     },
+    connectionTimeout: 30000, // 30 seconds
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
   });
 
   // Verify connection configuration
